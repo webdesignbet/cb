@@ -9,3 +9,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.body-bg {
+  background: linear-gradient(135deg, rgb(0, 219, 255), rgb(9, 69, 102));
+}
+
+.bg-card {
+  background-color: #eee;
+}
+
+.bg-btn-nopress {
+  background: rgb(34, 82, 111);
+  transition: background 0.3s;
+}
+
+.bg-btn-press {
+  background: rgb(9, 69, 102);
+}
+
+.result-text {
+  color: rgb(0, 219, 255);
+}

@@ -1,6 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState, useRef } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const [result, setResult] = useState("Clique em girar para tentar a sorte!");
@@ -54,38 +54,48 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white">
-      <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px]">
-        <img
+      <div className="relative w-[450px] h-[450px] rounded-tl-2xl rounded-tr-2xl bg-card">
+        <Image
           src="/images/moldura7.png"
           alt="Moldura"
+          width={100}
+          height={100}
           className="absolute w-full h-full z-10"
+          unoptimized={true}
         />
-        <img
+        <Image
           ref={wheelRef}
           src="/images/roleta6.png"
           alt="Roleta"
+          width={100}
+          height={100}
           className="absolute w-full h-full z-20"
+          unoptimized={true}
         />
-        <img
+        <Image
           src="/images/seta2.png"
           alt="Seta"
+          width={100}
+          height={100}
           className="absolute w-full h-full z-30"
+          unoptimized={true}
         />
       </div>
+      <div className="flex flex-col relative w-[450px] h-[200px] items-center justify-center rounded-bl-2xl rounded-br-2xl shadow-lg bg-card pb-8">
+        <button
+          onClick={spinWheel}
+          disabled={spinning}
+          className={`mt-8 mb-8 px-26 py-3 rounded-lg font-bold transition ${
+            spinning
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-btn-nopress hover:bg-btn-press cursor-pointer"
+          }`}
+        >
+          Girar
+        </button>
 
-      <button
-        onClick={spinWheel}
-        disabled={spinning}
-        className={`mt-8 px-10 py-3 rounded-lg font-bold transition ${
-          spinning
-            ? "bg-gray-500 cursor-not-allowed"
-            : "bg-blue-700 hover:bg-blue-900 cursor-pointer"
-        }`}
-      >
-        Girar
-      </button>
-
-      <p className="mt-6 text-xl font-semibold">{result}</p>
+        <p className="mt-6 pb-6 text-xl font-semibold result-text">{result}</p>
+      </div>
 
       <audio ref={clickSoundRef} src="/sounds/click.mp3" preload="auto" />
       <audio ref={spinSoundRef} src="/sounds/roleta.mp3" preload="auto" />

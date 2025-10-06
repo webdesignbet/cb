@@ -94,7 +94,7 @@ export default function AdminPage() {
 
   if (!authorized) {
     return (
-      <div className="flex items-center justify-center h-screen w-full bg-gray-100">
+      <div className="flex items-center justify-center min-h-screen w-full bg-gray-100">
         <p className="text-4xl font-bold text-red-600">
           Acesso negado — chave inválida
         </p>
@@ -103,8 +103,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen text-gray-900 p-6 w-2xl bg-gray-100">
-      <h1 className="text-3xl font-bold my-10 text-black">Painel de Administração</h1>
+    <div className="flex flex-col items-center justify-center self-center max-h-[95vh] text-gray-900 p-6 w-xl bg-gray-100">
+      <h1 className="text-3xl font-bold my-6 text-black">Painel de Administração</h1>
 
       {message && (
         <div

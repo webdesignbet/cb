@@ -13,7 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className="flex justify-center align-center h-[100vh] bg-gradient-to-r from-cyan-400 to-blue-800">
+      <body className="flex justify-center align-center h-[100vh] body-bg">
         {children}
       </body>
     </html>
