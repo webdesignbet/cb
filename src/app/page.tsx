@@ -5,6 +5,7 @@ import Image from "next/image";
 export default function Home() {
   const [result, setResult] = useState("Clique em girar para tentar a sorte!");
   const [spinning, setSpinning] = useState(false);
+  const [animateResult, setAnimateResult] = useState(false);
   const wheelRef = useRef<HTMLImageElement>(null);
 
   const clickSoundRef = useRef<HTMLAudioElement>(null);
@@ -14,6 +15,7 @@ export default function Home() {
     if (spinning) return;
     setSpinning(true);
     setResult("Girando...");
+    setAnimateResult(false);
 
     clickSoundRef.current!.currentTime = 0;
     clickSoundRef.current!.play();
@@ -45,6 +47,8 @@ export default function Home() {
         console.log(prize);
       }
 
+      setAnimateResult(true);
+
       wheelRef.current!.style.transition = "none";
       wheelRef.current!.style.transform = `rotate(${finalDegree}deg)`;
 
@@ -54,7 +58,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white">
-      <div className="relative w-[450px] h-[450px] rounded-tl-2xl rounded-tr-2xl bg-card">
+      {/* Container da roleta */}
+      <div className="relative w-[80vw] max-w-[450px] h-[80vw] max-h-[450px] rounded-tl-2xl rounded-tr-2xl bg-card flex items-center justify-center">
         <Image
           src="/images/moldura7.png"
           alt="Moldura"
@@ -81,22 +86,31 @@ export default function Home() {
           unoptimized={true}
         />
       </div>
-      <div className="flex flex-col relative w-[450px] h-[200px] items-center justify-center rounded-bl-2xl rounded-br-2xl shadow-lg bg-card pb-8">
+
+      {/* Base com botão e texto */}
+      <div className="flex flex-col relative w-[80vw] max-w-[450px] h-[200px] items-center justify-center text-center rounded-bl-2xl rounded-br-2xl shadow-lg bg-card pb-8">
         <button
           onClick={spinWheel}
           disabled={spinning}
-          className={`mt-8 mb-8 px-26 py-3 rounded-lg font-bold transition ${
+          className={`mt-8 mb-8 px-24 py-3 rounded-lg font-bold transition-colors duration-300 ${
             spinning
               ? "bg-gray-500 cursor-not-allowed"
-              : "bg-btn-nopress hover:bg-btn-press cursor-pointer"
+              : "bg-btn-nopress hover:bg-btn-press cursor-pointer text-white"
           }`}
         >
           Girar
         </button>
 
-        <p className="mt-6 pb-6 text-xl sm:text-2xl md:text-2xl font-semibold result-text">{result}</p>
+        <p
+          className={`mt-6 pb-6 text-xl sm:text-2xl md:text-2xl font-semibold result-text ${
+            animateResult ? "animate-prizeReveal" : ""
+          }`}
+        >
+          {result}
+        </p>
       </div>
 
+      {/* Sons */}
       <audio ref={clickSoundRef} src="/sounds/click.mp3" preload="auto" />
       <audio ref={spinSoundRef} src="/sounds/roleta.mp3" preload="auto" />
     </div>

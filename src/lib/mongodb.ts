@@ -1,14 +1,40 @@
 import mongoose from "mongoose";
 
-let isConnected = false;
+const MONGODB_URI = process.env.MONGODB_URI!;
 
-export async function connectDB() {
-  if (isConnected) return;
+if (!MONGODB_URI) {
+  throw new Error("Defina a variavel MONGODB_URI no arquivo .env.local");
+}
 
-  const uri = process.env.MONGODB_URI as string;
-  if (!uri) throw new Error("MONGODB_URI não configurada!");
+declare global {
+  var mongoose: {
+    conn: typeof import("mongoose") | null;
+    promise: Promise<typeof import("mongoose")> | null;
+  } | undefined;
+}
 
-  await mongoose.connect(uri);
-  isConnected = true;
-  console.log("MongoDB conectado");
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+export default async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      bufferCommands: false,
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null;
+    throw error;
+  }
+  return cached.conn;
 }

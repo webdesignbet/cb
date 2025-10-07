@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
+// import { connectDB } from "@/lib/mongodb";
 import Prize from "@/models/Prize";
 
 export async function POST(request: Request) {
-  await connectDB();
+  // await connectDB();
   const body = await request.json();
   const { name, quantity } = body;
 

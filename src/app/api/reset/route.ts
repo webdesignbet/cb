@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
+// import { connectDB } from "@/lib/mongodb";
 import Prize from "@/models/Prize";
 
 export async function POST(request: Request) {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     );
   }
 
-  await connectDB();
+  // await connectDB();
   await Prize.deleteMany();
 
   await Prize.insertMany([

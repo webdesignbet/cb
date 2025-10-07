@@ -30,3 +30,24 @@ body {
 .result-text {
   color: rgb(0, 219, 255);
 }
+
+@keyframes prizeReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-prizeReveal {
+  animation: prizeReveal 0.6s ease;
+}
