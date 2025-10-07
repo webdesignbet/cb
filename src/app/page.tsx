@@ -94,7 +94,7 @@ export default function Home() {
           Girar
         </button>
 
-        <p className="mt-6 pb-6 text-xl font-semibold result-text">{result}</p>
+        <p className="mt-6 pb-6 text-xl sm:text-2xl md:text-2xl font-semibold result-text">{result}</p>
       </div>
 
       <audio ref={clickSoundRef} src="/sounds/click.mp3" preload="auto" />
