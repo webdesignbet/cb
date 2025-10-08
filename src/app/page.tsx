@@ -59,7 +59,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-white">
       {/* Container da roleta */}
-      <div className="relative w-[80vw] max-w-[450px] h-[80vw] max-h-[450px] rounded-tl-2xl rounded-tr-2xl bg-card flex items-center justify-center">
+      <div className="relative w-[80vw] max-w-[500px] h-[80vw] max-h-[500px] rounded-tl-2xl rounded-tr-2xl bg-card flex items-center justify-center">
         <Image
           src="/images/moldura7.png"
           alt="Moldura"
@@ -88,7 +88,7 @@ export default function Home() {
       </div>
 
       {/* Base com botão e texto */}
-      <div className="flex flex-col relative w-[80vw] max-w-[450px] h-[200px] items-center justify-center text-center rounded-bl-2xl rounded-br-2xl shadow-lg bg-card pb-8">
+      <div className="flex flex-col relative w-[80vw] max-w-[500px] h-[200px] items-center justify-center text-center rounded-bl-2xl rounded-br-2xl shadow-lg bg-card pb-8">
         <button
           onClick={spinWheel}
           disabled={spinning}
