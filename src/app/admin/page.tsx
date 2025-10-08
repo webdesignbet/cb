@@ -15,6 +15,9 @@ export default function AdminPage() {
   const [newPrizeName, setNewPrizeName] = useState("");
   const [newPrizeQty, setNewPrizeQty] = useState<number>(1);
   const [authorized, setAuthorized] = useState(false);
+  const [editingPrize, setEditingPrize] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editQty, setEditQty] = useState<number>(1);
 
   const getKeyFromUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -30,10 +33,14 @@ export default function AdminPage() {
   };
 
   const resetPrizes = async () => {
-    if (!confirm("Tem certeza que deseja resetar os prêmios?")) return;
+    if (
+      !confirm(
+        "Tem certeza que deseja limpar todos os prêmios? Essa ação é irreversível."
+      )
+    )
+      return;
 
     const key = getKeyFromUrl();
-
     const res = await fetch(`/api/reset?key=${key}`, { method: "POST" });
     const data = await res.json();
 
@@ -43,7 +50,7 @@ export default function AdminPage() {
       fetchPrizes();
     } else {
       setMessageType("error");
-      setMessage("Erro ao resetar prêmios.");
+      setMessage("Erro ao redefinir prêmios.");
     }
   };
 
@@ -69,6 +76,41 @@ export default function AdminPage() {
     } else {
       setMessageType("error");
       setMessage("Erro ao adicionar prêmio.");
+    }
+  };
+
+  const updatePrize = async (id: string) => {
+    const res = await fetch(`/api/prizes/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: editName, quantity: editQty }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      setMessageType("success");
+      setMessage("Prêmio atualizado!");
+      setEditingPrize(null);
+      fetchPrizes();
+    } else {
+      setMessageType("error");
+      setMessage("Erro ao atualizar prêmio.");
+    }
+  };
+
+  const deletePrize = async (id: string) => {
+    if (!confirm("Deseja realmente excluir este prêmio?")) return;
+
+    const res = await fetch(`/api/prizes/${id}`, { method: "DELETE" });
+    const data = await res.json();
+
+    if (data.success) {
+      setMessageType("success");
+      setMessage("Prêmio removido!");
+      fetchPrizes();
+    } else {
+      setMessageType("error");
+      setMessage("Erro ao remover prêmio.");
     }
   };
 
@@ -103,8 +145,10 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center self-center max-h-[95vh] text-gray-900 p-6 w-xl bg-gray-100">
-      <h1 className="text-3xl font-bold my-6 text-black">Painel de Administração</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen text-gray-900 p-6 w-full bg-gray-100">
+      <h1 className="text-3xl font-bold my-6 text-black">
+        Painel de Administração
+      </h1>
 
       {message && (
         <div
@@ -119,21 +163,79 @@ export default function AdminPage() {
       {loading ? (
         <p>Carregando...</p>
       ) : (
-        <table className="border-collapse border border-gray-400 bg-white shadow-lg">
+        <table className="border-collapse border border-gray-400 bg-white shadow-lg min-w-[600px]">
           <thead>
             <tr className="bg-gray-200">
               <th className="border border-gray-400 px-4 py-2">Prêmio</th>
               <th className="border border-gray-400 px-4 py-2">Quantidade</th>
+              <th className="border border-gray-400 px-4 py-2">Ações</th>
             </tr>
           </thead>
           <tbody>
             {prizes.map((p) => (
               <tr key={p._id}>
-                <td className="border border-gray-400 px-4 py-2 font-semibold">
-                  {p.name}
+                <td className="border border-gray-400 px-4 py-2">
+                  {editingPrize === p._id ? (
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="border px-2 py-1 w-full"
+                    />
+                  ) : (
+                    <span className="font-semibold">{p.name}</span>
+                  )}
                 </td>
                 <td className="border border-gray-400 px-4 py-2 text-center">
-                  {p.quantity === -1 ? "Infinito" : p.quantity}
+                  {editingPrize === p._id ? (
+                    <input
+                      type="number"
+                      value={editQty}
+                      onChange={(e) => setEditQty(Number(e.target.value))}
+                      className="border px-2 py-1 w-20 text-center"
+                    />
+                  ) : p.quantity === -1 ? (
+                    "Infinito"
+                  ) : (
+                    p.quantity
+                  )}
+                </td>
+                <td className="border border-gray-400 px-4 py-2 text-center">
+                  {editingPrize === p._id ? (
+                    <div className="flex gap-2 justify-center">
+                      <button
+                        onClick={() => updatePrize(p._id)}
+                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-800 transition"
+                      >
+                        Salvar
+                      </button>
+                      <button
+                        onClick={() => setEditingPrize(null)}
+                        className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-600 transition"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 justify-center">
+                      <button
+                        onClick={() => {
+                          setEditingPrize(p._id);
+                          setEditName(p.name);
+                          setEditQty(p.quantity);
+                        }}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-700 transition"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => deletePrize(p._id)}
+                        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800 transition"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
@@ -152,7 +254,7 @@ export default function AdminPage() {
           onClick={resetPrizes}
           className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-800 transition"
         >
-          Resetar Prêmios
+          Limpar Tudo
         </button>
       </div>
 

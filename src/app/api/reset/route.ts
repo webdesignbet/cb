@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-// import { connectDB } from "@/lib/mongodb";
+import connectDB from "@/lib/mongodb";
 import Prize from "@/models/Prize";
 
 export async function POST(request: Request) {
@@ -13,17 +13,8 @@ export async function POST(request: Request) {
     );
   }
 
-  // await connectDB();
+  await connectDB();
   await Prize.deleteMany();
 
-  await Prize.insertMany([
-    { name: "Taça Acrilico", quantity: 3 },
-    { name: "Chaveiro abridor de garrafa", quantity: 5 },
-    { name: "Copo ecolabel", quantity: 2 },
-    { name: "Tente outra vez", quantity: -1 },
-    { name: "Mochila saco", quantity: 4 },
-    { name: "Garrafa térmica", quantity: 1 },
-  ]);
-
-  return NextResponse.json({ success: true, message: "Prêmios resetados!" });
+  return NextResponse.json({ success: true, message: "Todos os prêmios foram removidos!" });
 }
