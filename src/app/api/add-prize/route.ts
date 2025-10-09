@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   await connectDB();
 
   const body = await request.json();
-  const { name, quantity } = body;
+  const { name, quantity, angleMin, angleMax } = body;
 
   if (!name || typeof name !== "string" || name.trim().length < 2) {
     return NextResponse.json(
@@ -40,6 +40,8 @@ export async function POST(request: Request) {
   const prize = new Prize({
     name: name.trim(),
     quantity,
+    angleMin,
+    angleMax,
   });
 
   await prize.save();

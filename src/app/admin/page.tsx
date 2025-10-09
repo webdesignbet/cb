@@ -281,7 +281,7 @@ export default function AdminPage() {
                         className="border px-2 py-1 w-20 text-center"
                       />
                     ) : (
-                      p.quantity
+                      (p.quantity === -1 ? "Infinito" : p.quantity)
                     )}
                   </td>
                   <td className="border border-gray-400 px-4 py-2 text-center">
