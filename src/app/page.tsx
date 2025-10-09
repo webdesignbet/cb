@@ -34,7 +34,11 @@ export default function Home() {
       let finalDegree = rotation % 360;
       if (finalDegree === 360) finalDegree = 0;
 
-      const res = await fetch("/api/spin", { method: "POST" });
+      const res = await fetch("/api/spin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ finalDegree }),
+      });
       const data = await res.json();
       const prize = data.prize;
 
@@ -70,7 +74,7 @@ export default function Home() {
         />
         <Image
           ref={wheelRef}
-          src="/images/roleta6.png"
+          src="/images/roleta7.png"
           alt="Roleta"
           width={100}
           height={100}

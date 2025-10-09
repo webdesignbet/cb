@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import Prize from "@/models/Prize";
-// import { connectDB } from "@/lib/mongodb";
+import connectDB from "@/lib/mongodb";
 
 async function seed() {
-  // await connectDB();
+  await connectDB();
 
   await Prize.deleteMany();
 

@@ -4,26 +4,49 @@ import Prize from "@/models/Prize";
 
 export async function POST(request: Request) {
   await connectDB();
+
   const body = await request.json();
   const { name, quantity } = body;
 
-  if (!name || quantity === undefined) {
+  if (!name || typeof name !== "string" || name.trim().length < 2) {
     return NextResponse.json(
-      { success: false, message: "Nome e quantidade são obrigatórios." },
+      { success: false, message: "O nome do prêmio é inválido." },
       { status: 400 }
     );
   }
 
-  let prize = await Prize.findOne({ name });
-  if (prize) {
-    if (prize.quantity !== -1) {
-      prize.quantity += Number(quantity);
-      await prize.save();
-    }
-  } else {
-    prize = new Prize({ name, quantity: Number(quantity) });
-    await prize.save();
+  if (isNaN(quantity) || !Number.isInteger(quantity)) {
+    return NextResponse.json(
+      { success: false, message: "A quantidade precisa ser um número inteiro." },
+      { status: 400 }
+    );
   }
 
-  return NextResponse.json({ success: true, message: "Prêmio adicionado!" });
+  if (quantity < -1) {
+    return NextResponse.json(
+      { success: false, message: "A quantidade não pode ser menor que -1." },
+      { status: 400 }
+    );
+  }
+
+  const existing = await Prize.findOne({ name: name.trim() });
+  if (existing) {
+    return NextResponse.json(
+      { success: false, message: "Já existe um prêmio com este nome." },
+      { status: 409 }
+    );
+  }
+
+  const prize = new Prize({
+    name: name.trim(),
+    quantity,
+  });
+
+  await prize.save();
+
+  return NextResponse.json({
+    success: true,
+    message: "Prêmio adicionado com sucesso!",
+    prize,
+  });
 }
