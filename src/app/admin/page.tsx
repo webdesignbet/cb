@@ -202,7 +202,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-gray-900 p-6 w-full bg-gray-100">
+    <div className="flex flex-col items-center justify-center max-h-screen text-gray-900 p-6 w-full bg-gray-100">
       <h1 className="text-3xl font-bold my-6 text-black">
         Painel de Administração
       </h1>
