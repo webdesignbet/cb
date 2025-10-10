@@ -2,8 +2,8 @@ name: Warm Vercel App
 
 on:
   schedule:
-    - cron: '*/10 * * * *'   # roda a cada 10 minutos (UTC)
-  workflow_dispatch: {}      # permite rodar manualmente
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
 
 concurrency:
   group: warm-vercel
@@ -30,9 +30,8 @@ jobs:
           fi
 
           echo "🔁 Pinging $WARM_URL ..."
-          START=$(date +%s%3N) # tempo inicial em milissegundos
+          START=$(date +%s%3N)
 
-          # Envia requisição com timeout e captura status e corpo
           RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 20 \
             -H "Authorization: Bearer $CRON_SECRET" \
             "$WARM_URL" || true)
@@ -56,5 +55,4 @@ jobs:
             echo "::notice::Warm-up OK em ${DURATION}ms"
           fi
 
-          # Não falha o job em caso de erro de rede leve
           exit 0
