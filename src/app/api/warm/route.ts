@@ -1,8 +1,16 @@
 import connectDB from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
   const start = Date.now();
+
+  const authHeader = req.headers.get("Authorization");
+  const expected = `Bearer ${process.env.CRON_SECRET}`;
+
+  if (authHeader !== expected) {
+    console.warn("🚫 Tentativa de acesso não autorizada ao /api/warm");
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
 
   try {
     const conn = await connectDB();
@@ -17,15 +25,14 @@ export async function GET() {
       connectionState: conn.connection.readyState,
       timeMs: duration,
     });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error: unknown) {
     const duration = Date.now() - start;
-    console.error("❌ Erro ao aquecer o servidor:", error.message || error);
+    console.error("❌ Erro ao aquecer o servidor:", (error as Error).message);
 
     return NextResponse.json(
       {
         ok: false,
-        error: error.message || "Falha ao conectar com o banco de dados",
+        error: (error as Error).message || "Falha ao conectar com o banco de dados",
         timeMs: duration,
       },
       { status: 500 }
