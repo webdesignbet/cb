@@ -1,0 +1,60 @@
+name: Warm Vercel App
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # roda a cada 10 minutos (UTC)
+  workflow_dispatch: {}      # permite rodar manualmente
+
+concurrency:
+  group: warm-vercel
+  cancel-in-progress: true
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Pingar /api/warm (mantém a instância ativa)
+        env:
+          WARM_URL: ${{ secrets.WARM_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$WARM_URL" ]; then
+            echo "❌ WARM_URL não definido."
+            exit 1
+          fi
+          if [ -z "$CRON_SECRET" ]; then
+            echo "❌ CRON_SECRET não definido."
+            exit 1
+          fi
+
+          echo "🔁 Pinging $WARM_URL ..."
+          START=$(date +%s%3N) # tempo inicial em milissegundos
+
+          # Envia requisição com timeout e captura status e corpo
+          RESPONSE=$(curl -s -w "\n%{http_code}" --max-time 20 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$WARM_URL" || true)
+
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          STATUS=$(echo "$RESPONSE" | tail -n1)
+          END=$(date +%s%3N)
+          DURATION=$((END - START))
+
+          echo "----------------------------"
+          echo "📡 Status HTTP: $STATUS"
+          echo "⏱️ Tempo de resposta: ${DURATION}ms"
+          echo "----------------------------"
+          echo "🧾 Corpo da resposta:"
+          echo "$BODY"
+          echo "----------------------------"
+
+          if [ "$STATUS" != "200" ]; then
+            echo "::warning::O endpoint retornou status $STATUS — verifique logs na Vercel."
+          else
+            echo "::notice::Warm-up OK em ${DURATION}ms"
+          fi
+
+          # Não falha o job em caso de erro de rede leve
+          exit 0
