@@ -1,16 +1,8 @@
 import connectDB from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET() {
   const start = Date.now();
-
-  const authHeader = req.headers.get("Authorization");
-  const expected = `Bearer ${process.env.CRON_SECRET}`;
-
-  if (authHeader !== expected) {
-    console.warn("🚫 Tentativa de acesso não autorizada ao /api/warm");
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
 
   try {
     const conn = await connectDB();
