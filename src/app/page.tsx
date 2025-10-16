@@ -3,9 +3,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 
 export default function Home() {
-  const [result, setResult] = useState("Clique em girar para tentar a sorte!");
   const [spinning, setSpinning] = useState(false);
-  const [animateResult, setAnimateResult] = useState(false);
   const wheelRef = useRef<HTMLImageElement>(null);
 
   const clickSoundRef = useRef<HTMLAudioElement>(null);
@@ -14,8 +12,6 @@ export default function Home() {
   const spinWheel = async () => {
     if (spinning) return;
     setSpinning(true);
-    setResult("Girando...");
-    setAnimateResult(false);
 
     clickSoundRef.current!.currentTime = 0;
     clickSoundRef.current!.play();
@@ -34,24 +30,17 @@ export default function Home() {
       let finalDegree = rotation % 360;
       if (finalDegree === 360) finalDegree = 0;
 
-      const res = await fetch("/api/spin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ finalDegree }),
-      });
-      const data = await res.json();
-      const prize = data.prize;
-
-      if (prize === "Tente outra vez") {
-        setResult(prize);
-      } else if (prize === "Todos os prêmios acabaram!") {
-        setResult(prize);
-      } else {
-        setResult(`Você ganhou: ${prize}`);
-        console.log(prize);
+      try {
+        const res = await fetch("/api/spin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ finalDegree }),
+        });
+        const data = await res.json();
+        console.log("Resultado:", data.prize);
+      } catch (err) {
+        console.error("Erro ao girar:", err);
       }
-
-      setAnimateResult(true);
 
       wheelRef.current!.style.transition = "none";
       wheelRef.current!.style.transform = `rotate(${finalDegree}deg)`;
@@ -61,57 +50,61 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-white">
+    <div className="flex flex-col items-center h-[100vh] text-white p-0 justify-end">
       {/* Container da roleta */}
-      <div className="relative w-[90vw] max-w-[500px] h-[90vw] max-h-[500px] rounded-tl-2xl rounded-tr-2xl bg-card flex items-center justify-center">
+      <div className="relative w-[100vw] h-[100vw] lg:w-[25vw] lg:h-[28vw] flex items-center justify-center bottom-[2vh] lg:bottom-0 lg:top-[21vh]">
         <Image
-          src="/images/moldura7.png"
+          src="/images/moldura9.png"
           alt="Moldura"
           width={100}
           height={100}
-          className="absolute w-full h-full z-10"
+          className="absolute w-[98%] h-[98%] z-3 pointer-events-none"
           unoptimized={true}
         />
+
+        <div 
+          className={`absolute w-[80%] lg:w-[85%] h-[80%] lg:h-[85%] z-2 top-[14%] lg:top-[11.5%] flex items-center justify-center ${
+            spinning ? "cursor-not-allowed opacity-80" : "cursor-pointer"
+          }`}
+          onClick={spinWheel}
+        >
+          <Image
+            ref={wheelRef}
+            src="/images/roleta9.png"
+            alt="Roleta"
+            width={100}
+            height={100}
+            className="w-full h-full"
+            unoptimized={true}
+          />
+        </div>
         <Image
-          ref={wheelRef}
-          src="/images/roleta7.png"
-          alt="Roleta"
-          width={100}
-          height={100}
-          className="absolute w-full h-full z-20"
-          unoptimized={true}
-        />
-        <Image
-          src="/images/seta2.png"
-          alt="Seta"
-          width={100}
-          height={100}
-          className="absolute w-full h-full z-30"
+          src="/images/fundo2.png"
+          alt="Fundo"
+          width={90}
+          height={90}
+          className="absolute w-[75%] h-[75%] z-1"
           unoptimized={true}
         />
       </div>
 
-      {/* Base com botão e texto */}
-      <div className="flex flex-col relative w-[90vw] max-w-[500px] h-[200px] items-center justify-center text-center rounded-bl-2xl rounded-br-2xl shadow-lg bg-card pb-8">
-        <button
-          onClick={spinWheel}
-          disabled={spinning}
-          className={`mt-8 mb-8 px-24 py-3 rounded-lg font-bold transition-colors duration-300 ${
-            spinning
-              ? "bg-gray-500 cursor-not-allowed"
-              : "bg-btn-nopress hover:bg-btn-press cursor-pointer text-white"
-          }`}
-        >
-          Girar
-        </button>
-
-        <p
-          className={`mt-6 pb-6 text-xl sm:text-2xl md:text-2xl font-semibold result-text ${
-            animateResult ? "animate-prizeReveal" : ""
-          }`}
-        >
-          {result}
-        </p>
+      <div className="relative w-[100vw] lg:w-[25vw] h-[20vw] lg:h-[5vw] flex items-center justify-end mt-[27vh] lg:mt-[40vh]">
+        <Image
+          src="/images/personagens2.png"
+          alt="Personagens"
+          width={100}
+          height={100}
+          className="absolute w-full h-[40vh] lg:h-[35vh] z-4 bottom-0"
+          unoptimized={true}
+        />
+        <Image
+          src="/images/logo1.png"
+          alt="Logo"
+          width={100}
+          height={100}
+          className="absolute w-full h-full lg:h-[8vh] z-5 px-18 lg:px-24 lg:mb-[-1vh]"
+          unoptimized={true}
+        />
       </div>
 
       {/* Sons */}
