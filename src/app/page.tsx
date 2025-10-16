@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center h-[100vh] text-white p-0 justify-end">
       {/* Container da roleta */}
-      <div className="relative w-[100vw] h-[100vw] lg:w-[25vw] lg:h-[25vw] flex items-center justify-center bottom-[2vh] lg:bottom-0 lg:top-[21vh]">
+      <div className="relative w-[100vw] h-[100vw] lg:w-[26vw] lg:h-[26vw] flex items-center justify-center bottom-[2vh] lg:bottom-0 lg:top-[21vh]">
         <Image
           src="/images/moldura9.png"
           alt="Moldura"
