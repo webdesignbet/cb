@@ -52,7 +52,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center h-[100vh] text-white p-0 justify-end">
       {/* Container da roleta */}
-      <div className="relative w-[100vw] h-[100vw] lg:w-[25vw] lg:h-[28vw] flex items-center justify-center bottom-[2vh] lg:bottom-0 lg:top-[21vh]">
+      <div className="relative w-[100vw] h-[100vw] lg:w-[25vw] lg:h-[25vw] flex items-center justify-center bottom-[2vh] lg:bottom-0 lg:top-[21vh]">
         <Image
           src="/images/moldura9.png"
           alt="Moldura"
@@ -63,7 +63,7 @@ export default function Home() {
         />
 
         <div 
-          className={`absolute w-[80%] lg:w-[85%] h-[80%] lg:h-[85%] z-2 top-[14%] lg:top-[11.5%] flex items-center justify-center ${
+          className={`absolute w-[80%] h-[80%] z-2 top-[14%] flex items-center justify-center ${
             spinning ? "cursor-not-allowed opacity-80" : "cursor-pointer"
           }`}
           onClick={spinWheel}
