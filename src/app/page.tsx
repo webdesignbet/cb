@@ -58,7 +58,7 @@ export default function Home() {
           alt="Moldura"
           width={100}
           height={100}
-          className="absolute w-[98%] h-[98%] z-3 pointer-events-none"
+          className="absolute w-[92%] h-[98%] z-3 pointer-events-none"
           unoptimized={true}
         />
 
