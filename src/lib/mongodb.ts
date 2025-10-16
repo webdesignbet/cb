@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+const MONGODB_URI = process.env.MONGODB_URI_MONGODB_URI!;
 
 if (!MONGODB_URI) {
-  throw new Error("Defina a variavel MONGODB_URI no arquivo .env.local");
+  throw new Error("Defina a variavel MONGODB_URI_MONGODB_URI no arquivo .env.local");
 }
 
 declare global {
@@ -25,7 +25,7 @@ export default async function connectDB() {
   }
 
   if (!cached!.promise) {
-    cached!.promise = mongoose.connect(MONGODB_URI, {
+    cached!.promise = mongoose.connect(MONGODB_URI_MONGODB_URI, {
       bufferCommands: false,
     });
   }
